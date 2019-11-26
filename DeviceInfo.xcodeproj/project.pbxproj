@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5F089CBF23879312005132DC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CBE23879312005132DC /* AppDelegate.m */; };
-		5F089CC223879312005132DC /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CC123879312005132DC /* SceneDelegate.m */; };
 		5F089CC523879312005132DC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CC423879312005132DC /* ViewController.m */; };
 		5F089CC823879312005132DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F089CC623879312005132DC /* Main.storyboard */; };
 		5F089CCA23879313005132DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F089CC923879313005132DC /* Assets.xcassets */; };
@@ -16,6 +15,12 @@
 		5F089CD023879313005132DC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CCF23879313005132DC /* main.m */; };
 		5F089CDA23879313005132DC /* DeviceInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CD923879313005132DC /* DeviceInfoTests.m */; };
 		5F089CE523879313005132DC /* DeviceInfoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CE423879313005132DC /* DeviceInfoUITests.m */; };
+		5F089CF7238797BF005132DC /* KGDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CF6238797BF005132DC /* KGDeviceInfo.m */; };
+		5F089CFA2387ACBE005132DC /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089CF92387ACBE005132DC /* WebKit.framework */; };
+		5F089CFD2387BA9F005132DC /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */; };
+		5F089D002387C64A005132DC /* HLNetWorkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CFE2387C649005132DC /* HLNetWorkReachability.m */; };
+		5F089D022387E93E005132DC /* show.js in Resources */ = {isa = PBXBuildFile; fileRef = 5F089D012387E93E005132DC /* show.js */; };
+		5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D03238D13B7005132DC /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,8 +44,6 @@
 		5F089CBA23879312005132DC /* DeviceInfo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeviceInfo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F089CBD23879312005132DC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5F089CBE23879312005132DC /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		5F089CC023879312005132DC /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		5F089CC123879312005132DC /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		5F089CC323879312005132DC /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		5F089CC423879312005132DC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		5F089CC723879312005132DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -54,6 +57,16 @@
 		5F089CE023879313005132DC /* DeviceInfoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeviceInfoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F089CE423879313005132DC /* DeviceInfoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceInfoUITests.m; sourceTree = "<group>"; };
 		5F089CE623879313005132DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5F089CF323879728005132DC /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		5F089CF5238797BF005132DC /* KGDeviceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KGDeviceInfo.h; sourceTree = "<group>"; };
+		5F089CF6238797BF005132DC /* KGDeviceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KGDeviceInfo.m; sourceTree = "<group>"; };
+		5F089CF92387ACBE005132DC /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
+		5F089CFC2387BA9F005132DC /* UIDevice+Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Hardware.h"; sourceTree = "<group>"; };
+		5F089CFE2387C649005132DC /* HLNetWorkReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLNetWorkReachability.m; sourceTree = "<group>"; };
+		5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLNetWorkReachability.h; sourceTree = "<group>"; };
+		5F089D012387E93E005132DC /* show.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = show.js; sourceTree = "<group>"; };
+		5F089D03238D13B7005132DC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */,
+				5F089CFA2387ACBE005132DC /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,10 +99,14 @@
 		5F089CB123879312005132DC = {
 			isa = PBXGroup;
 			children = (
+				5F089D07238D23A4005132DC /* Resources */,
+				5F089D06238D2397005132DC /* Classes */,
+				5F089CF323879728005132DC /* PrefixHeader.pch */,
 				5F089CBC23879312005132DC /* DeviceInfo */,
 				5F089CD823879313005132DC /* DeviceInfoTests */,
 				5F089CE323879313005132DC /* DeviceInfoUITests */,
 				5F089CBB23879312005132DC /* Products */,
+				5F089CF82387ACBE005132DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,10 +123,10 @@
 		5F089CBC23879312005132DC /* DeviceInfo */ = {
 			isa = PBXGroup;
 			children = (
+				5F089D012387E93E005132DC /* show.js */,
+				5F089CF423879752005132DC /* Util */,
 				5F089CBD23879312005132DC /* AppDelegate.h */,
 				5F089CBE23879312005132DC /* AppDelegate.m */,
-				5F089CC023879312005132DC /* SceneDelegate.h */,
-				5F089CC123879312005132DC /* SceneDelegate.m */,
 				5F089CC323879312005132DC /* ViewController.h */,
 				5F089CC423879312005132DC /* ViewController.m */,
 				5F089CC623879312005132DC /* Main.storyboard */,
@@ -135,6 +154,42 @@
 				5F089CE623879313005132DC /* Info.plist */,
 			);
 			path = DeviceInfoUITests;
+			sourceTree = "<group>";
+		};
+		5F089CF423879752005132DC /* Util */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		5F089CF82387ACBE005132DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5F089D03238D13B7005132DC /* CoreLocation.framework */,
+				5F089CF92387ACBE005132DC /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5F089D06238D2397005132DC /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		5F089D07238D23A4005132DC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */,
+				5F089CFE2387C649005132DC /* HLNetWorkReachability.m */,
+				5F089CFC2387BA9F005132DC /* UIDevice+Hardware.h */,
+				5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */,
+				5F089CF5238797BF005132DC /* KGDeviceInfo.h */,
+				5F089CF6238797BF005132DC /* KGDeviceInfo.m */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,6 +298,7 @@
 				5F089CCD23879313005132DC /* LaunchScreen.storyboard in Resources */,
 				5F089CCA23879313005132DC /* Assets.xcassets in Resources */,
 				5F089CC823879312005132DC /* Main.storyboard in Resources */,
+				5F089D022387E93E005132DC /* show.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,10 +323,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F089CFD2387BA9F005132DC /* UIDevice+Hardware.m in Sources */,
 				5F089CC523879312005132DC /* ViewController.m in Sources */,
 				5F089CBF23879312005132DC /* AppDelegate.m in Sources */,
 				5F089CD023879313005132DC /* main.m in Sources */,
-				5F089CC223879312005132DC /* SceneDelegate.m in Sources */,
+				5F089CF7238797BF005132DC /* KGDeviceInfo.m in Sources */,
+				5F089D002387C64A005132DC /* HLNetWorkReachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,7 +499,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				INFOPLIST_FILE = DeviceInfo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -458,7 +518,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				INFOPLIST_FILE = DeviceInfo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
