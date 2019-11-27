@@ -155,9 +155,9 @@
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
 //    CLog(@"\n");
-    for (CLLocation *location in locations) {
+//    for (CLLocation *location in locations) {
 //        CLog(@"lat,lon : %f,%f", location.coordinate.latitude, location.coordinate.longitude);
-    }
+//    }
 //    CLog(@"\n");
 }
 
