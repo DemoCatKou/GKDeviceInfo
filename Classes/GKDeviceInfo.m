@@ -10,6 +10,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import <AdSupport/AdSupport.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <CoreTelephony/CTCarrier.h>
 
 #import "UIDevice+Hardware.h"
 #import "HLNetWorkReachability.h"
@@ -21,12 +24,18 @@
 @implementation GKDeviceInfo
 {
     HLNetWorkReachability *reachability;
-    GKNetWorkStatus newWorkStatus;
+    GKNetWorkStatus netWorkStatus;
+    NSString *netWorkStatusName;
     CLLocationManager *locationManager;
+    NSString *lat;
+    NSString *lon;
 }
 -(instancetype)init {
     self = [super init];
     if (self) {
+        netWorkStatusName = @"";
+        lat = @"";
+        lon = @"";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kNetWorkReachabilityChangedNotification object:nil];
         reachability = [HLNetWorkReachability reachabilityWithHostName:@"www.baidu.com"];
         [reachability startNotifier];
@@ -48,10 +57,12 @@
 
 +(NSString *)deviceModel {
     NSString *model = [[UIDevice currentDevice] model];
-//    NSString *localizedModel = [[UIDevice currentDevice] localizedModel];
     NSString *platformString = [UIDevice currentDevice].platformString;
-    
-    return [NSString stringWithFormat:@"%@ %@", model, platformString];
+    if (platformString == nil) {
+        return model;
+    } else {
+        return platformString;
+    }
 }
 
 +(NSString *)systemVersion {
@@ -127,6 +138,8 @@
     }
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     if (kCLAuthorizationStatusDenied == status || kCLAuthorizationStatusRestricted) {
+        lat = @"0";
+        lon = @"0";
         return NO;
     }
     return YES;
@@ -148,17 +161,20 @@
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     if (kCLAuthorizationStatusDenied == status || kCLAuthorizationStatusRestricted == status) {
 //        CLog(@"定位权限未开启");
+        lat = @"0";
+        lon = @"0";
     } else {
         [self managerStartLocation];
     }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
-//    CLog(@"\n");
-//    for (CLLocation *location in locations) {
+    for (CLLocation *location in locations) {
 //        CLog(@"lat,lon : %f,%f", location.coordinate.latitude, location.coordinate.longitude);
-//    }
-//    CLog(@"\n");
+        lat = [NSString stringWithFormat:@"%f", location.coordinate.latitude];
+        lon = [NSString stringWithFormat:@"%f", location.coordinate.longitude];
+    }
+    [self logInfo];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
@@ -171,31 +187,37 @@
 {
     HLNetWorkReachability *curReach = [notification object];
     HLNetWorkStatus netStatus = [curReach currentReachabilityStatus];
-    newWorkStatus = (NSUInteger)netStatus;
-    [self logInfo];
+    netWorkStatus = (NSUInteger)netStatus;
     switch (netStatus) {
       case HLNetWorkStatusNotReachable:
 //        CLog(@"网络不可用");
+            netWorkStatusName = @"NotReachable";
         break;
       case HLNetWorkStatusUnknown:
 //        CLog(@"未知网络");
+            netWorkStatusName = @"Unknow";
         break;
       case HLNetWorkStatusWWAN2G:
 //        CLog(@"2G网络");
+            netWorkStatusName = @"2G";
         break;
       case HLNetWorkStatusWWAN3G:
 //        CLog(@"3G网络");
+            netWorkStatusName = @"3G";
         break;
       case HLNetWorkStatusWWAN4G:
 //        CLog(@"4G网络");
+            netWorkStatusName = @"4G";
         break;
       case HLNetWorkStatusWiFi:
 //        CLog(@"WiFi");
+            netWorkStatusName = @"WiFi";
         break;
          
       default:
         break;
     }
+    [self logInfo];
 }
 
 -(void)logInfo {
@@ -203,26 +225,83 @@
 }
 
 -(NSString *)description {
-    NSMutableString *str = [NSMutableString string];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"BundleIdentifier:%@", [GKDeviceInfo currentBundleIdentifier]];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"version:%@;", [GKDeviceInfo currentApplicationVersion]];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"device:%@ %@; ", [GKDeviceInfo deviceName], [GKDeviceInfo deviceModel]];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"system:%@ %@", [GKDeviceInfo systemVersion], [GKDeviceInfo screenSize]];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"country:%@ language:%@", [GKDeviceInfo language], [GKDeviceInfo currentCountry]];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"network:%lu", (unsigned long)newWorkStatus];
-    [str appendFormat:@"\n"];
-    [str appendFormat:@"%@", [GKDeviceInfo otherInfo]];
-    [str appendFormat:@"\n"];
-    [GKDeviceInfo language];
-//    [str appendFormat:@"%@", [KGDeviceInfo networktype]];
+    NSString *str = [self allDeviceInfoJson];
     return str;
 }
 
+-(NSDictionary *)allDeviceInfo {
+    NSDictionary *dic = @{@"bundle_id":[GKDeviceInfo currentBundleIdentifier],
+                          @"version":[GKDeviceInfo currentApplicationVersion],
+                          @"device_name":[GKDeviceInfo deviceName],
+                          @"device_model":[GKDeviceInfo deviceModel],
+                          @"system":[GKDeviceInfo systemVersion],
+                          @"screen":[GKDeviceInfo screenSize],
+                          @"country":[GKDeviceInfo currentCountry],
+                          @"language":[GKDeviceInfo language],
+                          @"network":netWorkStatusName,
+                          @"mobile_network":[GKDeviceInfo mobileNetworkInfo],
+                          @"latitude":lat,
+                          @"longitude":lon,
+                          @"idfa":[GKDeviceInfo deviceIDFA],
+                          @"idfv":[GKDeviceInfo deviceIDFV]
+    };
+    
+    return dic;
+}
+
+-(NSString *)allDeviceInfoJson {
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self allDeviceInfo] options:NSJSONWritingPrettyPrinted error:&error];
+    if (jsonData == nil) {
+        return @"";
+    }
+    NSString *str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    str = [str stringByReplacingOccurrencesOfString:@" " withString:@""];
+    str = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    return str;
+}
+
+#pragma mark - IDFV
++(NSString *)deviceIDFV {
+    NSUUID *uuid = [[UIDevice currentDevice] identifierForVendor];
+    return [uuid UUIDString];
+}
+
+#pragma mark - IDFA
++(BOOL)idfaIsOpen {
+    return [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled];
+}
+
++(NSString *)deviceIDFA {
+    if (![GKDeviceInfo idfaIsOpen]) {
+        return @"0";
+    }
+    NSUUID *uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
+    return [uuid UUIDString];
+}
+#pragma makr - SIM
++(BOOL)isSIMInstalled {
+    CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [networkInfo subscriberCellularProvider];
+    if (!carrier.isoCountryCode) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
++(NSDictionary *)mobileNetworkInfo {
+    if (![GKDeviceInfo isSIMInstalled]) {
+        return @{};
+    }
+    CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [networkInfo subscriberCellularProvider];
+    NSDictionary *dic = @{@"carrier_name":carrier.carrierName,
+                          @"mcc":carrier.mobileCountryCode,
+                          @"mnc":carrier.mobileNetworkCode,
+                          @"country_code":carrier.isoCountryCode
+                        };
+    return dic;
+}
 
 @end

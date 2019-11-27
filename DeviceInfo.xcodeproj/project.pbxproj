@@ -21,6 +21,8 @@
 		5F089D002387C64A005132DC /* HLNetWorkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089CFE2387C649005132DC /* HLNetWorkReachability.m */; };
 		5F089D022387E93E005132DC /* show.js in Resources */ = {isa = PBXBuildFile; fileRef = 5F089D012387E93E005132DC /* show.js */; };
 		5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D03238D13B7005132DC /* CoreLocation.framework */; };
+		5F089D0A238E530D005132DC /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D09238E530D005132DC /* AdSupport.framework */; };
+		5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D0B238E5762005132DC /* CoreTelephony.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLNetWorkReachability.h; sourceTree = "<group>"; };
 		5F089D012387E93E005132DC /* show.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = show.js; sourceTree = "<group>"; };
 		5F089D03238D13B7005132DC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		5F089D09238E530D005132DC /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		5F089D0B238E5762005132DC /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,8 +78,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */,
 				5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */,
 				5F089CFA2387ACBE005132DC /* WebKit.framework in Frameworks */,
+				5F089D0A238E530D005132DC /* AdSupport.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +172,8 @@
 		5F089CF82387ACBE005132DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F089D0B238E5762005132DC /* CoreTelephony.framework */,
+				5F089D09238E530D005132DC /* AdSupport.framework */,
 				5F089D03238D13B7005132DC /* CoreLocation.framework */,
 				5F089CF92387ACBE005132DC /* WebKit.framework */,
 			);

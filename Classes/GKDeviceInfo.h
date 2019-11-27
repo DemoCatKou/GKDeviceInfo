@@ -37,6 +37,25 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 -(void)requestLocation;
 //网络 location
 
+#pragma mark - IDFV
++(NSString *)deviceIDFV;
+
+#pragma mark - IDFA
++(BOOL)idfaIsOpen;
++(NSString *)deviceIDFA;
+
+#pragma makr - SIM
++(BOOL)isSIMInstalled;
+/**
+ *@result @{"carrier_name":"", @"mcc":@"", @"mnc",@"country_code":ISO 3166-1}
+ */
++(NSDictionary *)mobileNetworkInfo;
+
+
+
+-(NSDictionary *)allDeviceInfo;
+
+-(NSString *)allDeviceInfoJson;
 @end
 
 NS_ASSUME_NONNULL_END

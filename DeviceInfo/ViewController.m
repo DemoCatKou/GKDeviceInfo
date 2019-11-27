@@ -27,8 +27,8 @@
     deviceInfo = [[GKDeviceInfo alloc] init];
 //    CLog(@"%@", deviceInfo.description);
     
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.5:8080"]];
-    [self.webView loadRequest:request];
+//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.5:8080"]];
+//    [self.webView loadRequest:request];
     
     [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"exchange"];
     
@@ -37,6 +37,12 @@
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [deviceInfo requestLocation];
+    if ([GKDeviceInfo isSIMInstalled]) {
+        CLog(@"存在手机卡");
+    } else {
+        CLog(@"不存在手机卡");
+    }
+    CLog(@"idfa %@", [GKDeviceInfo deviceIDFA]);
 }
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
