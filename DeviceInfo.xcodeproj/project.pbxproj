@@ -67,6 +67,7 @@
 		5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLNetWorkReachability.h; sourceTree = "<group>"; };
 		5F089D012387E93E005132DC /* show.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = show.js; sourceTree = "<group>"; };
 		5F089D03238D13B7005132DC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		5F089D08238E3691005132DC /* KGDeviceInfoTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KGDeviceInfoTool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +182,7 @@
 				5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */,
 				5F089CF5238797BF005132DC /* KGDeviceInfo.h */,
 				5F089CF6238797BF005132DC /* KGDeviceInfo.m */,
+				5F089D08238E3691005132DC /* KGDeviceInfoTool.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
