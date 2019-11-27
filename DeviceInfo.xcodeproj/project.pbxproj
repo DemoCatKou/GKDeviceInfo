@@ -175,6 +175,12 @@
 		5F089D06238D2397005132DC /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */,
+				5F089CFE2387C649005132DC /* HLNetWorkReachability.m */,
+				5F089CFC2387BA9F005132DC /* UIDevice+Hardware.h */,
+				5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */,
+				5F089CF5238797BF005132DC /* KGDeviceInfo.h */,
+				5F089CF6238797BF005132DC /* KGDeviceInfo.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -182,12 +188,6 @@
 		5F089D07238D23A4005132DC /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				5F089CFF2387C64A005132DC /* HLNetWorkReachability.h */,
-				5F089CFE2387C649005132DC /* HLNetWorkReachability.m */,
-				5F089CFC2387BA9F005132DC /* UIDevice+Hardware.h */,
-				5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */,
-				5F089CF5238797BF005132DC /* KGDeviceInfo.h */,
-				5F089CF6238797BF005132DC /* KGDeviceInfo.m */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -501,7 +501,7 @@
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				INFOPLIST_FILE = DeviceInfo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -520,7 +520,7 @@
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				INFOPLIST_FILE = DeviceInfo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

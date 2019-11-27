@@ -150,15 +150,21 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
             CTTelephonyNetworkInfo *teleInfo= [[CTTelephonyNetworkInfo alloc] init];
-//            NSString *accessString = teleInfo.currentRadioAccessTechnology;
-            NSDictionary *dicTeleInfo = teleInfo.serviceCurrentRadioAccessTechnology;
-            if (dicTeleInfo == nil) {
-                return HLNetWorkStatusUnknown;
+            NSString *accessString = @"";
+        
+            if (@available(iOS 12.0, *)) {
+                NSDictionary *dicTeleInfo = teleInfo.serviceCurrentRadioAccessTechnology;
+                if (dicTeleInfo == nil) {
+                    return HLNetWorkStatusUnknown;
+                }
+                if (dicTeleInfo.count == 0) {
+                    return HLNetWorkStatusUnknown;
+                }
+                accessString = [dicTeleInfo.allValues firstObject];
+            } else {
+                // Fallback on earlier versions
+                accessString = teleInfo.currentRadioAccessTechnology;
             }
-            if (dicTeleInfo.count == 0) {
-                return HLNetWorkStatusUnknown;
-            }
-            NSString *accessString = [dicTeleInfo.allValues firstObject];
             if ([typeStrings4G containsObject:accessString]) {
                 return HLNetWorkStatusWWAN4G;
             } else if ([typeStrings3G containsObject:accessString]) {
