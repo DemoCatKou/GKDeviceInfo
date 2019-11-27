@@ -6,7 +6,7 @@
 //  Copyright © 2019 HongXing Guo. All rights reserved.
 //
 
-#import "KGDeviceInfo.h"
+#import "GKDeviceInfo.h"
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
@@ -14,14 +14,14 @@
 #import "UIDevice+Hardware.h"
 #import "HLNetWorkReachability.h"
 
-@interface KGDeviceInfo()<CLLocationManagerDelegate>
+@interface GKDeviceInfo()<CLLocationManagerDelegate>
 
 @end
 
-@implementation KGDeviceInfo
+@implementation GKDeviceInfo
 {
     HLNetWorkReachability *reachability;
-    KGNetWorkStatus newWorkStatus;
+    GKNetWorkStatus newWorkStatus;
     CLLocationManager *locationManager;
 }
 -(instancetype)init {
@@ -205,21 +205,21 @@
 -(NSString *)description {
     NSMutableString *str = [NSMutableString string];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"BundleIdentifier:%@", [KGDeviceInfo currentBundleIdentifier]];
+    [str appendFormat:@"BundleIdentifier:%@", [GKDeviceInfo currentBundleIdentifier]];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"version:%@;", [KGDeviceInfo currentApplicationVersion]];
+    [str appendFormat:@"version:%@;", [GKDeviceInfo currentApplicationVersion]];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"device:%@ %@; ", [KGDeviceInfo deviceName], [KGDeviceInfo deviceModel]];
+    [str appendFormat:@"device:%@ %@; ", [GKDeviceInfo deviceName], [GKDeviceInfo deviceModel]];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"system:%@ %@", [KGDeviceInfo systemVersion], [KGDeviceInfo screenSize]];
+    [str appendFormat:@"system:%@ %@", [GKDeviceInfo systemVersion], [GKDeviceInfo screenSize]];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"country:%@ language:%@", [KGDeviceInfo language], [KGDeviceInfo currentCountry]];
+    [str appendFormat:@"country:%@ language:%@", [GKDeviceInfo language], [GKDeviceInfo currentCountry]];
     [str appendFormat:@"\n"];
     [str appendFormat:@"network:%lu", (unsigned long)newWorkStatus];
     [str appendFormat:@"\n"];
-    [str appendFormat:@"%@", [KGDeviceInfo otherInfo]];
+    [str appendFormat:@"%@", [GKDeviceInfo otherInfo]];
     [str appendFormat:@"\n"];
-    [KGDeviceInfo language];
+    [GKDeviceInfo language];
 //    [str appendFormat:@"%@", [KGDeviceInfo networktype]];
     return str;
 }

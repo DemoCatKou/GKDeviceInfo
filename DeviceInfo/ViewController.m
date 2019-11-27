@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
-#import "KGDeviceInfo.h"
+#import "GKDeviceInfo.h"
 
 @interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler>
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
@@ -17,14 +17,14 @@
 
 @implementation ViewController
 {
-    KGDeviceInfo *deviceInfo;
+    GKDeviceInfo *deviceInfo;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.webView.UIDelegate = self;
     self.webView.navigationDelegate = self;
-    deviceInfo = [[KGDeviceInfo alloc] init];
+    deviceInfo = [[GKDeviceInfo alloc] init];
 //    CLog(@"%@", deviceInfo.description);
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.5:8080"]];

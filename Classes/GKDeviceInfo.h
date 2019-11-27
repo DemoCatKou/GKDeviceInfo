@@ -11,17 +11,17 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-typedef NS_ENUM(NSUInteger, KGNetWorkStatus) {
-    KGNetWorkStatusNotReachable = 0,
-    KGNetWorkStatusUnknown = 1,
-    KGNetWorkStatusWWAN2G = 2,
-    KGNetWorkStatusWWAN3G = 3,
-    KGNetWorkStatusWWAN4G = 4,
+typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
+    GKNetWorkStatusNotReachable = 0,
+    GKNetWorkStatusUnknown = 1,
+    GKNetWorkStatusWWAN2G = 2,
+    GKNetWorkStatusWWAN3G = 3,
+    GKNetWorkStatusWWAN4G = 4,
     
-    KGNetWorkStatusWiFi = 9,
+    GKNetWorkStatusWiFi = 9,
 };
 
-@interface KGDeviceInfo : NSObject
+@interface GKDeviceInfo : NSObject
 
 +(NSString *)currentApplicationVersion;
 +(NSString *)currentBundleIdentifier;
