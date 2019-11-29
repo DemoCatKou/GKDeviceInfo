@@ -21,7 +21,17 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
     GKNetWorkStatusWiFi = 9,
 };
 
+@class GKDeviceInfo;
+@protocol GKDeviceInfoDelegate <NSObject>
+
+@optional
+-(void)deviceInfoDidChange:(GKDeviceInfo *)info;
+
+@end
+
 @interface GKDeviceInfo : NSObject
+
+@property(weak, nonatomic) id<GKDeviceInfoDelegate> delegate;
 
 +(NSString *)currentApplicationVersion;
 +(NSString *)currentBundleIdentifier;
@@ -32,11 +42,6 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 +(NSString *)currentCountry;
 +(NSString *)screenSize;
 
-
--(BOOL)locationAuthorize;
--(void)requestLocation;
-//网络 location
-
 #pragma mark - IDFV
 +(NSString *)deviceIDFV;
 
@@ -44,17 +49,21 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 +(BOOL)idfaIsOpen;
 +(NSString *)deviceIDFA;
 
-#pragma makr - SIM
+#pragma mark - SIM
 +(BOOL)isSIMInstalled;
 /**
  *@result @{"carrier_name":"", @"mcc":@"", @"mnc",@"country_code":ISO 3166-1}
  */
 +(NSDictionary *)mobileNetworkInfo;
 
+#pragma mark - VPN Check
++ (NSDictionary *)getProxyStatus;
 
+#pragma mark - LOCATION
+-(BOOL)locationAuthorize;
+-(void)requestLocation;
 
 -(NSDictionary *)allDeviceInfo;
-
 -(NSString *)allDeviceInfoJson;
 @end
 

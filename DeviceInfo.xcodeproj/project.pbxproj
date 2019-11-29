@@ -23,6 +23,8 @@
 		5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D03238D13B7005132DC /* CoreLocation.framework */; };
 		5F089D0A238E530D005132DC /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D09238E530D005132DC /* AdSupport.framework */; };
 		5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D0B238E5762005132DC /* CoreTelephony.framework */; };
+		5F089D0F238F92BC005132DC /* GKStringFun.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D0E238F92BC005132DC /* GKStringFun.m */; };
+		5F089D15238F9F23005132DC /* NSString+GKString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D14238F9F23005132DC /* NSString+GKString.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,10 @@
 		5F089D03238D13B7005132DC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		5F089D09238E530D005132DC /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5F089D0B238E5762005132DC /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5F089D0D238F92BC005132DC /* GKStringFun.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GKStringFun.h; sourceTree = "<group>"; };
+		5F089D0E238F92BC005132DC /* GKStringFun.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GKStringFun.m; sourceTree = "<group>"; };
+		5F089D13238F9F23005132DC /* NSString+GKString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+GKString.h"; sourceTree = "<group>"; };
+		5F089D14238F9F23005132DC /* NSString+GKString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+GKString.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +195,10 @@
 				5F089CFB2387BA9F005132DC /* UIDevice+Hardware.m */,
 				5F089CF5238797BF005132DC /* GKDeviceInfo.h */,
 				5F089CF6238797BF005132DC /* GKDeviceInfo.m */,
+				5F089D0D238F92BC005132DC /* GKStringFun.h */,
+				5F089D0E238F92BC005132DC /* GKStringFun.m */,
+				5F089D13238F9F23005132DC /* NSString+GKString.h */,
+				5F089D14238F9F23005132DC /* NSString+GKString.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -333,8 +343,10 @@
 			files = (
 				5F089CFD2387BA9F005132DC /* UIDevice+Hardware.m in Sources */,
 				5F089CC523879312005132DC /* ViewController.m in Sources */,
+				5F089D15238F9F23005132DC /* NSString+GKString.m in Sources */,
 				5F089CBF23879312005132DC /* AppDelegate.m in Sources */,
 				5F089CD023879313005132DC /* main.m in Sources */,
+				5F089D0F238F92BC005132DC /* GKStringFun.m in Sources */,
 				5F089CF7238797BF005132DC /* GKDeviceInfo.m in Sources */,
 				5F089D002387C64A005132DC /* HLNetWorkReachability.m in Sources */,
 			);

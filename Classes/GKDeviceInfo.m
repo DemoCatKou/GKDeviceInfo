@@ -39,8 +39,13 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kNetWorkReachabilityChangedNotification object:nil];
         reachability = [HLNetWorkReachability reachabilityWithHostName:@"www.baidu.com"];
         [reachability startNotifier];
+//        [self requestLocation];
     }
     return self;
+}
+
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNetWorkReachabilityChangedNotification object:nil];
 }
 
 +(NSString *)currentApplicationVersion {
@@ -163,6 +168,9 @@
 //        CLog(@"定位权限未开启");
         lat = @"0";
         lon = @"0";
+        if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+            [_delegate deviceInfoDidChange:self];
+        }
     } else {
         [self managerStartLocation];
     }
@@ -174,11 +182,18 @@
         lat = [NSString stringWithFormat:@"%f", location.coordinate.latitude];
         lon = [NSString stringWithFormat:@"%f", location.coordinate.longitude];
     }
-    [self logInfo];
+    if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+        [_delegate deviceInfoDidChange:self];
+    }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
 //    CLog(@"location error:%@", error.description);
+    lon = @"1";
+    lat = @"1";
+    if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+        [_delegate deviceInfoDidChange:self];
+    }
 }
 
 #pragma mark - reachability
@@ -187,7 +202,7 @@
 {
     HLNetWorkReachability *curReach = [notification object];
     HLNetWorkStatus netStatus = [curReach currentReachabilityStatus];
-    netWorkStatus = (NSUInteger)netStatus;
+    
     switch (netStatus) {
       case HLNetWorkStatusNotReachable:
 //        CLog(@"网络不可用");
@@ -217,11 +232,12 @@
       default:
         break;
     }
-    [self logInfo];
-}
-
--(void)logInfo {
-    NSLog(@"%@", [self description]);
+    if (![netWorkStatusName isEqualToString:@""] && (NSUInteger)netStatus != netWorkStatus) {
+        netWorkStatus = (NSUInteger)netStatus;
+        if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+            [_delegate deviceInfoDidChange:self];
+        }
+    }
 }
 
 -(NSString *)description {
@@ -240,6 +256,7 @@
                           @"language":[GKDeviceInfo language],
                           @"network":netWorkStatusName,
                           @"mobile_network":[GKDeviceInfo mobileNetworkInfo],
+                          @"vpn":[GKDeviceInfo getProxyStatus],
                           @"latitude":lat,
                           @"longitude":lon,
                           @"idfa":[GKDeviceInfo deviceIDFA],
@@ -302,6 +319,28 @@
                           @"country_code":carrier.isoCountryCode
                         };
     return dic;
+}
+
+#pragma mark - VPN Check
++ (NSDictionary *)getProxyStatus {
+    NSDictionary *proxySettings =  (__bridge NSDictionary *)(CFNetworkCopySystemProxySettings());
+    NSArray *proxies = (__bridge NSArray *)(CFNetworkCopyProxiesForURL((__bridge CFURLRef _Nonnull)([NSURL URLWithString:@"https://www.baidu.com"]), (__bridge CFDictionaryRef _Nonnull)(proxySettings)));
+    NSDictionary *settings = [proxies objectAtIndex:0];
+    
+    NSString *host = [settings objectForKey:(NSString *)kCFProxyHostNameKey];
+    host = host==nil ? @"" : host;
+    NSString *port = [settings objectForKey:(NSString *)kCFProxyPortNumberKey];
+    port = port==nil ? @"" : port;
+    NSString *type = [settings objectForKey:(NSString *)kCFProxyTypeKey];
+    NSString *ivpn = @"";
+    
+    if ([[settings objectForKey:(NSString *)kCFProxyTypeKey] isEqualToString:@"kCFProxyTypeNone"]){
+        ivpn = @"noVPNsetting";
+    }else{
+        //设置代理了
+        ivpn = @"VPNsetting";
+    }
+    return @{@"status":ivpn, @"host":host, @"port":port, @"type":type};
 }
 
 @end

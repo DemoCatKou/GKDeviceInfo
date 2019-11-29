@@ -9,8 +9,11 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "GKDeviceInfo.h"
+#import "GKStringFun.h"
 
-@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler>
+#import "NSString+GKString.h"
+
+@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate>
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
 
 @end
@@ -25,6 +28,7 @@
     self.webView.UIDelegate = self;
     self.webView.navigationDelegate = self;
     deviceInfo = [[GKDeviceInfo alloc] init];
+    deviceInfo.delegate = self;
 //    CLog(@"%@", deviceInfo.description);
     
 //    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.5:8080"]];
@@ -36,13 +40,21 @@
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [deviceInfo requestLocation];
-    if ([GKDeviceInfo isSIMInstalled]) {
-        CLog(@"存在手机卡");
-    } else {
-        CLog(@"不存在手机卡");
-    }
-    CLog(@"idfa %@", [GKDeviceInfo deviceIDFA]);
+//    [deviceInfo requestLocation];
+//    if ([GKDeviceInfo isSIMInstalled]) {
+//        CLog(@"存在手机卡");
+//    } else {
+//        CLog(@"不存在手机卡");
+//    }
+//    CLog(@"idfa %@", [GKDeviceInfo deviceIDFA]);
+    
+//    NSString *str = @"saidjklfalk 涉及到看来房价阿萨德……%￥%……& {}{}{}";//
+//    NSString *s1 = [GKStringFun simpleStringEncryptInput:str uid:23 isEncode:YES];
+//    NSString *s2 = [GKStringFun simpleStringEncryptInput:s1 uid:23 isEncode:NO];
+//    CLog(@"source %@", str);
+//    CLog(@"sec %@", s1);
+//    CLog(@"res %@", s2);
+    
 }
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
@@ -56,6 +68,10 @@
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"exchange"];
 }
 
+#pragma mark - GKDeviceDelegate
+-(void)deviceInfoDidChange:(GKDeviceInfo *)info {
+    CLog(@"%@", info.allDeviceInfoJson);
+}
 
 #pragma mark - WKNavigatiionDelegate
 
