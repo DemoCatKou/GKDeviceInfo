@@ -59,6 +59,9 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 #pragma mark - VPN Check
 + (NSDictionary *)getProxyStatus;
 
+#pragma mark - WIFI Info
++ (NSDictionary *)wifiInfo;
+
 #pragma mark - LOCATION
 -(BOOL)locationAuthorize;
 -(void)requestLocation;

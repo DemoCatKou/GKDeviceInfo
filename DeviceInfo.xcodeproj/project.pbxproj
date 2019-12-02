@@ -25,6 +25,7 @@
 		5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D0B238E5762005132DC /* CoreTelephony.framework */; };
 		5F089D0F238F92BC005132DC /* GKStringFun.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D0E238F92BC005132DC /* GKStringFun.m */; };
 		5F089D15238F9F23005132DC /* NSString+GKString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D14238F9F23005132DC /* NSString+GKString.m */; };
+		5FD09FBA2394D72800BA2AFE /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,8 @@
 		5F089D0E238F92BC005132DC /* GKStringFun.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GKStringFun.m; sourceTree = "<group>"; };
 		5F089D13238F9F23005132DC /* NSString+GKString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+GKString.h"; sourceTree = "<group>"; };
 		5F089D14238F9F23005132DC /* NSString+GKString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+GKString.m"; sourceTree = "<group>"; };
+		5FD09FB82394CF9100BA2AFE /* DeviceInfo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeviceInfo.entitlements; sourceTree = "<group>"; };
+		5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */,
+				5FD09FBA2394D72800BA2AFE /* ExternalAccessory.framework in Frameworks */,
 				5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */,
 				5F089CFA2387ACBE005132DC /* WebKit.framework in Frameworks */,
 				5F089D0A238E530D005132DC /* AdSupport.framework in Frameworks */,
@@ -135,6 +139,7 @@
 		5F089CBC23879312005132DC /* DeviceInfo */ = {
 			isa = PBXGroup;
 			children = (
+				5FD09FB82394CF9100BA2AFE /* DeviceInfo.entitlements */,
 				5F089D012387E93E005132DC /* show.js */,
 				5F089CF423879752005132DC /* Util */,
 				5F089CBD23879312005132DC /* AppDelegate.h */,
@@ -178,6 +183,7 @@
 		5F089CF82387ACBE005132DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */,
 				5F089D0B238E5762005132DC /* CoreTelephony.framework */,
 				5F089D09238E530D005132DC /* AdSupport.framework */,
 				5F089D03238D13B7005132DC /* CoreLocation.framework */,
@@ -517,6 +523,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeviceInfo/DeviceInfo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
@@ -536,6 +543,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DeviceInfo/DeviceInfo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JB7SGVNTMD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
