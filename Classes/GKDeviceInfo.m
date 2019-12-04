@@ -342,7 +342,7 @@
         //设置代理了
         ivpn = YES;
     }
-    return @{@"status":[NSNumber numberWithBool:ivpn], @"host":host, @"port":[NSNumber numberWithInt:port], @"type":type};
+    return @{@"status":[NSNumber numberWithBool:ivpn], @"host":host, @"port":[NSNumber numberWithInt:port.intValue], @"type":type};
 }
 
 #pragma mark - WIFI Info
