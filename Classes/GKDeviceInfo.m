@@ -36,8 +36,8 @@
     self = [super init];
     if (self) {
         netWorkStatusName = @"";
-        lat = @"";
-        lon = @"";
+        lat = @"0";
+        lon = @"0";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kNetWorkReachabilityChangedNotification object:nil];
         reachability = [HLNetWorkReachability reachabilityWithHostName:@"www.baidu.com"];
         [reachability startNotifier];
@@ -108,11 +108,9 @@
     return nsCountry;
 }
 
-+(NSString *)screenSize {
++(CGSize)screenSize {
     CGSize size = [[UIScreen mainScreen] currentMode].size;
-    CGFloat width = size.width;
-    CGFloat height = size.height;
-    return [NSString stringWithFormat:@"%.0f×%.0f", width, height];
+    return size;
 }
 
 +(NSString *) otherInfo {
@@ -253,15 +251,16 @@
                           @"device_name":[GKDeviceInfo deviceName],
                           @"device_model":[GKDeviceInfo deviceModel],
                           @"system":[GKDeviceInfo systemVersion],
-                          @"screen":[GKDeviceInfo screenSize],
+                          @"screen_width":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].width],
+                          @"screen_height":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].height],
                           @"country":[GKDeviceInfo currentCountry],
                           @"language":[GKDeviceInfo language],
                           @"network":netWorkStatusName,
                           @"wifi":[GKDeviceInfo wifiInfo],
                           @"mobile_network":[GKDeviceInfo mobileNetworkInfo],
                           @"vpn":[GKDeviceInfo getProxyStatus],
-                          @"latitude":lat,
-                          @"longitude":lon,
+                          @"latitude":[NSDecimalNumber decimalNumberWithString:lat],
+                          @"longitude":[NSDecimalNumber decimalNumberWithString:lon],
                           @"idfa":[GKDeviceInfo deviceIDFA],
                           @"idfv":[GKDeviceInfo deviceIDFV]
     };
@@ -317,8 +316,8 @@
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
     NSDictionary *dic = @{@"carrier_name":carrier.carrierName,
-                          @"mcc":carrier.mobileCountryCode,
-                          @"mnc":carrier.mobileNetworkCode,
+                          @"mcc":[NSNumber numberWithInteger:carrier.mobileCountryCode.integerValue],
+                          @"mnc":[NSNumber numberWithInteger:carrier.mobileNetworkCode.integerValue],
                           @"country_code":carrier.isoCountryCode
                         };
     return dic;
@@ -333,17 +332,17 @@
     NSString *host = [settings objectForKey:(NSString *)kCFProxyHostNameKey];
     host = host==nil ? @"" : host;
     NSString *port = [settings objectForKey:(NSString *)kCFProxyPortNumberKey];
-    port = port==nil ? @"" : port;
+    port = port==nil ? @"0" : port;
     NSString *type = [settings objectForKey:(NSString *)kCFProxyTypeKey];
-    NSString *ivpn = @"";
+    BOOL ivpn = NO;
     
     if ([[settings objectForKey:(NSString *)kCFProxyTypeKey] isEqualToString:@"kCFProxyTypeNone"]){
-        ivpn = @"noVPNsetting";
+        ivpn = NO;
     }else{
         //设置代理了
-        ivpn = @"VPNsetting";
+        ivpn = YES;
     }
-    return @{@"status":ivpn, @"host":host, @"port":port, @"type":type};
+    return @{@"status":[NSNumber numberWithBool:ivpn], @"host":host, @"port":[NSNumber numberWithInt:port], @"type":type};
 }
 
 #pragma mark - WIFI Info

@@ -10,8 +10,10 @@
 #import <WebKit/WebKit.h>
 #import "GKDeviceInfo.h"
 #import "GKStringFun.h"
+//#import <objc/runtime.h>
 
 #import "NSString+GKString.h"
+#import "NSObject+open.h"
 
 @interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate>
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
@@ -31,8 +33,8 @@
     deviceInfo.delegate = self;
 //    CLog(@"%@", deviceInfo.description);
     
-//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.5:8080"]];
-//    [self.webView loadRequest:request];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://free-xing.saas.craftmine.pro/issues.html?project_id=1&status_id=o"]];
+    [self.webView loadRequest:request];
     
     [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"exchange"];
     
@@ -61,7 +63,46 @@
     CLog(@"js called :%@ %@", message.name, message.body);
 }
 - (IBAction)testAction:(id)sender {
-    [deviceInfo requestLocation];
+//    [deviceInfo requestLocation];
+    
+//    Class lsawsc = objc_getClass("LSApplicationWorkspace");
+//    NSObject* workspace = [lsawsc performSelector:NSSelectorFromString(@"defaultWorkspace")];
+//    BOOL opend = NO;
+//    // iOS6 没有defaultWorkspace
+//    if ([workspace respondsToSelector:NSSelectorFromString(@"openApplicationWithBundleID:")])
+//    {
+//        [workspace performSelector:NSSelectorFromString(@"openApplicationWithBundleID:") withObject:@"com.hpbr.bosszhipin"];
+//    }
+    
+//    id LSApplication = NSClassFromString(@"LSApplicationWorkspace");
+//    id workspace = [LSApplication bql_invokeMethod:@"defaultWorkspace"];
+//    [workspace bql_invoke:@"openApplicationWithBundleID:" arguments:@[@"com.hpbr.bosszhipin"]];
+    
+//    id LSApplication = NSClassFromString(@"LSApplicationRestrictionsManager");
+//    id shared = [LSApplication bql_invokeMethod:@"sharedInstance"];
+//    [shared bql_invoke:@"setWhitelistedBundleIDs:" arguments:@[@"com.hpbr.bosszhipin"]];
+//
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"com.hpbr.bosszhipin://"] options:@{} completionHandler:^(BOOL success) {
+//        // 如果!success就重新注册一下，不过我测试发现注册一次，所有app都能通过该函数唤起scheme打开
+//    }];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"我们需要对您的操作进行一次认证" message:@"如果'不'接收认证，任务将无法完成!" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString *strUrl = [NSString stringWithFormat:@"https://www.tonglukeji.com?bind=%@", [GKDeviceInfo deviceIDFA]];
+        CLog(@"will open:%@", strUrl);
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:strUrl] options:@{} completionHandler:^(BOOL success) {
+            
+        }];;
+    }];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"不" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:action];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:^{
+        
+    }];
 }
 
 -(void)dealloc {
@@ -116,6 +157,13 @@
  */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
     CLog(@"-");
+    
+//    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+//    NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:[NSURL URLWithString:@""]];
+//    for (NSHTTPCookie *cookie in cookies) {
+//        CLog(@"%@", cookie.description);
+//    }
+//    
     decisionHandler(WKNavigationResponsePolicyAllow);
 }
 
@@ -166,6 +214,11 @@
  */
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
     CLog(@"-");
+    WKHTTPCookieStore *cookieStore = webView.configuration.websiteDataStore.httpCookieStore;
+    [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+        CLog(@"all cookies:%@", cookies.description);
+    }];
+    
     [webView evaluateJavaScript:@"jsfile()" completionHandler:^(id _Nullable r, NSError * _Nullable error) {
         
     }];

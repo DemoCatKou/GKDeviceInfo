@@ -25,6 +25,7 @@
 		5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089D0B238E5762005132DC /* CoreTelephony.framework */; };
 		5F089D0F238F92BC005132DC /* GKStringFun.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D0E238F92BC005132DC /* GKStringFun.m */; };
 		5F089D15238F9F23005132DC /* NSString+GKString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089D14238F9F23005132DC /* NSString+GKString.m */; };
+		5F8BFEC5239658FE00A51583 /* NSObject+open.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F8BFEC4239658FE00A51583 /* NSObject+open.m */; };
 		5FD09FBA2394D72800BA2AFE /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */; };
 /* End PBXBuildFile section */
 
@@ -78,6 +79,8 @@
 		5F089D0E238F92BC005132DC /* GKStringFun.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GKStringFun.m; sourceTree = "<group>"; };
 		5F089D13238F9F23005132DC /* NSString+GKString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+GKString.h"; sourceTree = "<group>"; };
 		5F089D14238F9F23005132DC /* NSString+GKString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+GKString.m"; sourceTree = "<group>"; };
+		5F8BFEC3239658FE00A51583 /* NSObject+open.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+open.h"; sourceTree = "<group>"; };
+		5F8BFEC4239658FE00A51583 /* NSObject+open.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+open.m"; sourceTree = "<group>"; };
 		5FD09FB82394CF9100BA2AFE /* DeviceInfo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeviceInfo.entitlements; sourceTree = "<group>"; };
 		5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -205,6 +208,8 @@
 				5F089D0E238F92BC005132DC /* GKStringFun.m */,
 				5F089D13238F9F23005132DC /* NSString+GKString.h */,
 				5F089D14238F9F23005132DC /* NSString+GKString.m */,
+				5F8BFEC3239658FE00A51583 /* NSObject+open.h */,
+				5F8BFEC4239658FE00A51583 /* NSObject+open.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -354,6 +359,7 @@
 				5F089CD023879313005132DC /* main.m in Sources */,
 				5F089D0F238F92BC005132DC /* GKStringFun.m in Sources */,
 				5F089CF7238797BF005132DC /* GKDeviceInfo.m in Sources */,
+				5F8BFEC5239658FE00A51583 /* NSObject+open.m in Sources */,
 				5F089D002387C64A005132DC /* HLNetWorkReachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

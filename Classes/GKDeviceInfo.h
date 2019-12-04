@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -40,7 +40,7 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 +(NSString *)systemVersion;
 +(NSString *)language; //first of preferred Languages
 +(NSString *)currentCountry;
-+(NSString *)screenSize;
++(CGSize)screenSize;
 
 #pragma mark - IDFV
 +(NSString *)deviceIDFV;
@@ -60,9 +60,11 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 + (NSDictionary *)getProxyStatus;
 
 #pragma mark - WIFI Info
+// ....
 + (NSDictionary *)wifiInfo;
 
 #pragma mark - LOCATION
+// ....
 -(BOOL)locationAuthorize;
 -(void)requestLocation;
 

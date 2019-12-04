@@ -25,13 +25,13 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5hp-i4-iGz">
-                                <rect key="frame" x="355" y="62" width="46" height="30"/>
+                                <rect key="frame" x="201" y="62" width="200" height="44"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="46" id="ldk-X4-FRL"/>
-                                    <constraint firstAttribute="height" constant="30" id="ygV-PT-rue"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="ldk-X4-FRL"/>
+                                    <constraint firstAttribute="height" constant="44" id="ygV-PT-rue"/>
                                 </constraints>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="完成任务">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -45,6 +45,7 @@
                             <constraint firstItem="ve7-to-NIc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="IWs-xq-DdV"/>
                             <constraint firstItem="ve7-to-NIc" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="JUI-Nv-axW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="5hp-i4-iGz" secondAttribute="trailing" constant="13" id="Yvy-XB-X2f"/>
+                            <constraint firstItem="5hp-i4-iGz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" symbolic="YES" id="edS-uK-jl1"/>
                             <constraint firstItem="ve7-to-NIc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="feF-jP-KiR"/>
                             <constraint firstItem="5hp-i4-iGz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="18" id="pZL-Ta-WS6"/>
                         </constraints>
