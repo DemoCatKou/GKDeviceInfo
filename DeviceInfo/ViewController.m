@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "GKDeviceInfo.h"
-#import "GKStringFun.h"
 //#import <objc/runtime.h>
 
 #import "NSString+GKString.h"
@@ -49,13 +48,6 @@
 //        CLog(@"不存在手机卡");
 //    }
 //    CLog(@"idfa %@", [GKDeviceInfo deviceIDFA]);
-    
-//    NSString *str = @"saidjklfalk 涉及到看来房价阿萨德……%￥%……& {}{}{}";//
-//    NSString *s1 = [GKStringFun simpleStringEncryptInput:str uid:23 isEncode:YES];
-//    NSString *s2 = [GKStringFun simpleStringEncryptInput:s1 uid:23 isEncode:NO];
-//    CLog(@"source %@", str);
-//    CLog(@"sec %@", s1);
-//    CLog(@"res %@", s2);
     
 }
 
