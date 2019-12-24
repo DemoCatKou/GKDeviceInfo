@@ -9,12 +9,16 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "GKDeviceInfo.h"
-//#import <objc/runtime.h>
+#import <objc/runtime.h>
+#import <SafariServices/SafariServices.h>
 
 #import "NSString+GKString.h"
 #import "NSObject+open.h"
+#import "NSObject+PropertyListing.h"
+#import "GKStringRFun.h"
+#import "GKStringFun.h"
 
-@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate>
+@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate, SFSafariViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
 
 @end
@@ -22,6 +26,8 @@
 @implementation ViewController
 {
     GKDeviceInfo *deviceInfo;
+    SFSafariViewController *safariViewController;
+    SFAuthenticationSession *sfSession;
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,10 +38,14 @@
     deviceInfo.delegate = self;
 //    CLog(@"%@", deviceInfo.description);
     
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://free-xing.saas.craftmine.pro/issues.html?project_id=1&status_id=o"]];
-    [self.webView loadRequest:request];
+//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://free-xing.saas.craftmine.pro/issues.html?project_id=1&status_id=o"]];
+//    [self.webView loadRequest:request];
+//
+//    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"exchange"];
+//
+//    NSString *str = [deviceInfo middangeardLanguageTranslationJson];
+//    CLog(@"--> %@", str);
     
-    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"exchange"];
     
 }
 
@@ -48,28 +58,58 @@
 //        CLog(@"不存在手机卡");
 //    }
 //    CLog(@"idfa %@", [GKDeviceInfo deviceIDFA]);
+//    if ([GKDeviceInfo isDebugModle]) {
+//        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://www.baidu.com"]];
+//        [self.webView loadRequest:request];
+//    } else {
+//        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://free-xing.saas.craftmine.pro/issues.html?project_id=1&status_id=o"]];
+//        [self.webView loadRequest:request];
+//    }
     
+    if ([GKDeviceInfo isJailBroken]) {
+        CLog(@"!!!!!!!!!!!!jailbroken");
+    } else {
+        CLog(@"no jailbroken");
+    }
 }
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     CLog(@"js called :%@ %@", message.name, message.body);
 }
 - (IBAction)testAction:(id)sender {
+    if (safariViewController == nil) {
+        safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"]];
+        safariViewController.delegate = self;
+        sfSession = [[SFAuthenticationSession alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"] callbackURLScheme:@"kent" completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+            
+        }];
+    }
+    [sfSession start];
+//    [self presentViewController:safariViewController animated:YES completion:^{
+//
+//    }];
+    
 //    [deviceInfo requestLocation];
     
 //    Class lsawsc = objc_getClass("LSApplicationWorkspace");
 //    NSObject* workspace = [lsawsc performSelector:NSSelectorFromString(@"defaultWorkspace")];
-//    BOOL opend = NO;
+////    BOOL opend = NO;
 //    // iOS6 没有defaultWorkspace
 //    if ([workspace respondsToSelector:NSSelectorFromString(@"openApplicationWithBundleID:")])
 //    {
-//        [workspace performSelector:NSSelectorFromString(@"openApplicationWithBundleID:") withObject:@"com.hpbr.bosszhipin"];
+////        [workspace performSelector:NSSelectorFromString(@"openApplicationWithBundleID:") withObject:@"com.hpbr.bosszhipin"];
 //    }
+//    NSArray *array1 = [workspace performSelector:NSSelectorFromString(@"publicURLSchemes") withObject:nil];
+//    NSArray *array2 = [workspace performSelector:NSSelectorFromString(@"privateURLSchemes") withObject:nil];
+//    NSArray *array = [workspace getAllProperties];
+//    NSLog(@"%@", array.description);
+//    [workspace printMothList];
+    
     
 //    id LSApplication = NSClassFromString(@"LSApplicationWorkspace");
 //    id workspace = [LSApplication bql_invokeMethod:@"defaultWorkspace"];
 //    [workspace bql_invoke:@"openApplicationWithBundleID:" arguments:@[@"com.hpbr.bosszhipin"]];
-    
+//
 //    id LSApplication = NSClassFromString(@"LSApplicationRestrictionsManager");
 //    id shared = [LSApplication bql_invokeMethod:@"sharedInstance"];
 //    [shared bql_invoke:@"setWhitelistedBundleIDs:" arguments:@[@"com.hpbr.bosszhipin"]];
@@ -78,23 +118,23 @@
 //        // 如果!success就重新注册一下，不过我测试发现注册一次，所有app都能通过该函数唤起scheme打开
 //    }];
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"我们需要对您的操作进行一次认证" message:@"如果'不'接收认证，任务将无法完成!" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSString *strUrl = [NSString stringWithFormat:@"https://www.tonglukeji.com?bind=%@", [GKDeviceInfo deviceIDFA]];
-        CLog(@"will open:%@", strUrl);
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:strUrl] options:@{} completionHandler:^(BOOL success) {
-            
-        }];;
-    }];
-    
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"不" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    [alert addAction:action];
-    [alert addAction:cancel];
-    [self presentViewController:alert animated:YES completion:^{
-        
-    }];
+//    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"我们需要对您的操作进行一次认证" message:@"如果'不'接收认证，任务将无法完成!" preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        NSString *strUrl = [NSString stringWithFormat:@"https://www.tonglukeji.com?bind=%@", [GKDeviceInfo deviceIDFA]];
+//        CLog(@"will open:%@", strUrl);
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:strUrl] options:@{} completionHandler:^(BOOL success) {
+//
+//        }];;
+//    }];
+//
+//    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"不" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//
+//    }];
+//    [alert addAction:action];
+//    [alert addAction:cancel];
+//    [self presentViewController:alert animated:YES completion:^{
+//
+//    }];
 }
 
 -(void)dealloc {
@@ -103,7 +143,7 @@
 
 #pragma mark - GKDeviceDelegate
 -(void)deviceInfoDidChange:(GKDeviceInfo *)info {
-    CLog(@"%@", info.allDeviceInfoJson);
+//    CLog(@"%@", info.allDeviceInfoJson);
 }
 
 #pragma mark - WKNavigatiionDelegate
@@ -149,7 +189,6 @@
  */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
     CLog(@"-");
-    
 //    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
 //    NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:[NSURL URLWithString:@""]];
 //    for (NSHTTPCookie *cookie in cookies) {
@@ -404,4 +443,52 @@
 //}
 //
 //#endif
+
+
+#pragma mark - SFSafariViewControllerDelegate
+/*! @abstract Called when the view controller is about to show UIActivityViewController after the user taps the action button.
+    @param URL the URL of the web page.
+    @param title the title of the web page.
+    @result Returns an array of UIActivity instances that will be appended to UIActivityViewController.
+ */
+- (NSArray<UIActivity *> *)safariViewController:(SFSafariViewController *)controller activityItemsForURL:(NSURL *)URL title:(nullable NSString *)title {
+    UIActivity *activity = [[UIActivity alloc] init];
+    CLog(@"===");
+    return @[activity];
+}
+
+/*! @abstract Allows you to exclude certain UIActivityTypes from the UIActivityViewController presented when the user taps the action button.
+    @discussion Called when the view controller is about to show a UIActivityViewController after the user taps the action button.
+    @param URL the URL of the current web page.
+    @param title the title of the current web page.
+    @result Returns an array of any UIActivityType that you want to be excluded from the UIActivityViewController.
+ */
+- (NSArray<UIActivityType> *)safariViewController:(SFSafariViewController *)controller excludedActivityTypesForURL:(NSURL *)URL title:(nullable NSString *)title API_AVAILABLE(ios(11.0)) {
+    CLog(@"===");
+    return @[UIActivityTypeAirDrop];
+}
+
+/*! @abstract Delegate callback called when the user taps the Done button. Upon this call, the view controller is dismissed modally. */
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
+    CLog(@"===");
+//    controller.configuration.
+}
+
+/*! @abstract Invoked when the initial URL load is complete.
+    @param didLoadSuccessfully YES if loading completed successfully, NO if loading failed.
+    @discussion This method is invoked when SFSafariViewController completes the loading of the URL that you pass
+    to its initializer. It is not invoked for any subsequent page loads in the same SFSafariViewController instance.
+ */
+- (void)safariViewController:(SFSafariViewController *)controller didCompleteInitialLoad:(BOOL)didLoadSuccessfully {
+    CLog(@"===");
+}
+
+/*! @abstract Called when the browser is redirected to another URL while loading the initial page.
+    @param URL The new URL to which the browser was redirected.
+    @discussion This method may be called even after -safariViewController:didCompleteInitialLoad: if
+    the web page performs additional redirects without user interaction.
+ */
+- (void)safariViewController:(SFSafariViewController *)controller initialLoadDidRedirectToURL:(NSURL *)URL API_AVAILABLE(ios(11.0)) {
+    CLog(@"===");
+}
 @end

@@ -15,6 +15,7 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import <NetworkExtension/NetworkExtension.h>
+#include <sys/sysctl.h>
 
 #import "UIDevice+Hardware.h"
 #import "HLNetWorkReachability.h"
@@ -361,6 +362,67 @@
         }];
     }
     return dic;
+}
+
+#pragma mark - DEVICE STATUS
++ (BOOL)isJailBroken {
+    NSArray *jailbreak_tool_paths = @[
+        @"/Applications/Cydia.app",
+        @"/Library/MobileSubstrate/MobileSubstrate.dylib",
+        @"/bin/bash",
+        @"/usr/sbin/sshd",
+        @"/etc/apt"
+    ];
+
+    for (int i=0; i<jailbreak_tool_paths.count; i++) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:jailbreak_tool_paths[i]]) {
+            return YES;
+        }
+    }
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://"]]) {
+        return YES;
+    }
+    //unusefull
+    if ([[NSFileManager defaultManager] fileExistsAtPath:@"User/Applications/"]) {
+        NSArray *appList = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"User/Applications/" error:nil];
+        NSLog(@"appList = %@", appList);
+        return YES;
+    }
+    //unusefull
+    if (printEnv()) {
+        NSLog(@"The device is jail broken!");
+        return YES;
+    }
+    return NO;
+}
+char* printEnv(void) {
+    char *env = getenv("DYLD_INSERT_LIBRARIES");
+    NSLog(@"%s", env);
+    return env;
+}
+
+
++ (BOOL)isDebugModle {
+#if !TARGET_OS_IPHONE
+    return false;
+#endif
+    struct kinfo_proc info;
+    size_t info_size = sizeof(info);
+    int name[4];
+    
+    name[0] = CTL_KERN;
+    name[1] = KERN_PROC;
+    name[2] = KERN_PROC_PID;
+    name[3] = getpid();
+    
+    if (sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+        NSLog(@"sysctl() failed: %s", strerror(errno));
+        return false;
+    }
+    if ((info.kp_proc.p_flag & P_TRACED) != 0){
+        return true;
+    }
+    return false;
 }
 
 //+ (void)scanWifiInfos{

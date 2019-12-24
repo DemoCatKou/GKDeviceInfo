@@ -1,7 +1,1 @@
-function show() {
-	var x = document.getElementsByClassName("author");
-	var i;
-	for (i = 0; i < x.length; i++) {
-	    x[i].style.backgroundColor = "red";
-	}
-}
+{"bundle_id":"com.kent.demo.CameraPicker","version":"1.0","system":"iOS13.1.3","mobile_network":{"country_code":"cn","mnc":11,"mcc":460,"carrier_name":"中国电信"},"vpn":{"status":false,"host":"","type":"kCFProxyTypeNone","port":""},"longitude":121.626528,"latitude":38.916008,"idfa":"E4B84DC8-D1B0-416C-8A7D-9B34F692A291","wifi":{"BSSID":"34:6b:5b:be:cc:8c","SSID":"TongLuTech_3G"},"screen_height":2688,"device_name":"Kent","language":"zh-Hans-CN","idfv":"224B8A2B-338F-4B40-900E-D57210ECFE68","network":"WiFi","screen_width":1242,"device_model":"iPhoneXSMax","country":"CN"}

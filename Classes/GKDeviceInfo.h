@@ -33,28 +33,28 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 
 @property(weak, nonatomic) id<GKDeviceInfoDelegate> delegate;
 
-+(NSString *)currentApplicationVersion;
-+(NSString *)currentBundleIdentifier;
-+(NSString *)deviceName;
-+(NSString *)deviceModel;
-+(NSString *)systemVersion;
-+(NSString *)language; //first of preferred Languages
-+(NSString *)currentCountry;
-+(CGSize)screenSize;
++ (NSString *)currentApplicationVersion;
++ (NSString *)currentBundleIdentifier;
++ (NSString *)deviceName;
++ (NSString *)deviceModel;
++ (NSString *)systemVersion;
++ (NSString *)language; //first of preferred Languages
++ (NSString *)currentCountry;
++ (CGSize)screenSize;
 
 #pragma mark - IDFV
 +(NSString *)deviceIDFV;
 
 #pragma mark - IDFA
-+(BOOL)idfaIsOpen;
-+(NSString *)deviceIDFA;
++ (BOOL)idfaIsOpen;
++ (NSString *)deviceIDFA;
 
 #pragma mark - SIM
-+(BOOL)isSIMInstalled;
++ (BOOL)isSIMInstalled;
 /**
  *@result @{"carrier_name":"", @"mcc":@"", @"mnc",@"country_code":ISO 3166-1}
  */
-+(NSDictionary *)mobileNetworkInfo;
++ (NSDictionary *)mobileNetworkInfo;
 
 #pragma mark - VPN Check
 + (NSDictionary *)getProxyStatus;
@@ -65,11 +65,16 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 
 #pragma mark - LOCATION
 // ....
--(BOOL)locationAuthorize;
--(void)requestLocation;
+- (BOOL)locationAuthorize;
+- (void)requestLocation;
 
--(NSDictionary *)allDeviceInfo;
--(NSString *)allDeviceInfoJson;
+- (NSDictionary *)allDeviceInfo;
+- (NSString *)allDeviceInfoJson;
+
+#pragma mark - DEVICE STATUS
++ (BOOL)isJailBroken;
++ (BOOL)isDebugModle;
+
 @end
 
 NS_ASSUME_NONNULL_END

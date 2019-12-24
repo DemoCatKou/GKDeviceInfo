@@ -16,6 +16,19 @@
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.kent.deviceinfo.e</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kent</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -40,7 +53,9 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>我们需要您的同意,才能访问相册以选择照片进行上传</string>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>network-authentication</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -64,9 +79,5 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>network-authentication</string>
-    </array>
 </dict>
 </plist>

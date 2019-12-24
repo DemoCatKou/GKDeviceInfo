@@ -47,6 +47,8 @@ DerivedData/
 # Carthage/Checkouts
 GKStringFun.h
 GKStringFun.m
+GKStringRFun.h
+GKStringRFun.m
 
 Carthage/Build/
 
