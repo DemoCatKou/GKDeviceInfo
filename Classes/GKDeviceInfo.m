@@ -294,7 +294,7 @@
 
 +(NSString *)deviceIDFA {
     if (![GKDeviceInfo idfaIsOpen]) {
-        return @"0";
+        return @"";
     }
     NSUUID *uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
     return [uuid UUIDString];

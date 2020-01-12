@@ -18,6 +18,8 @@
 #import "GKStringRFun.h"
 #import "GKStringFun.h"
 
+//#include "at.h"
+
 @interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate, SFSafariViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
 
@@ -38,7 +40,7 @@
     deviceInfo.delegate = self;
 //    CLog(@"%@", deviceInfo.description);
     
-//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://free-xing.saas.craftmine.pro/issues.html?project_id=1&status_id=o"]];
+//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://v.douyin.com/qV1gyk/"]];
 //    [self.webView loadRequest:request];
 //
 //    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"exchange"];
@@ -51,7 +53,7 @@
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-//    [deviceInfo requestLocation];
+    [deviceInfo requestLocation];
 //    if ([GKDeviceInfo isSIMInstalled]) {
 //        CLog(@"存在手机卡");
 //    } else {
@@ -71,20 +73,30 @@
     } else {
         CLog(@"no jailbroken");
     }
+    
+    
 }
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     CLog(@"js called :%@ %@", message.name, message.body);
 }
 - (IBAction)testAction:(id)sender {
-    if (safariViewController == nil) {
-        safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"]];
-        safariViewController.delegate = self;
-        sfSession = [[SFAuthenticationSession alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"] callbackURLScheme:@"kent" completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
-            
-        }];
-    }
-    [sfSession start];
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"telprompt://*3001#12345#*"] options:@{} completionHandler:^(BOOL success) {
+//        if (success) {
+//            CLog(@"~~~~ success");
+//        } else {
+//            CLog(@"~~~~ faile");
+//        }
+//    }];
+    
+//    if (safariViewController == nil) {
+//        safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"]];
+//        safariViewController.delegate = self;
+//        sfSession = [[SFAuthenticationSession alloc] initWithURL:[NSURL URLWithString:@"http://192.168.1.10"] callbackURLScheme:@"kent" completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+//
+//        }];
+//    }
+//    [sfSession start];
 //    [self presentViewController:safariViewController animated:YES completion:^{
 //
 //    }];
@@ -143,7 +155,7 @@
 
 #pragma mark - GKDeviceDelegate
 -(void)deviceInfoDidChange:(GKDeviceInfo *)info {
-//    CLog(@"%@", info.allDeviceInfoJson);
+    CLog(@"%@", info.allDeviceInfoJson);
 }
 
 #pragma mark - WKNavigatiionDelegate
@@ -157,7 +169,7 @@
  @discussion If you do not implement this method, the web view will load the request or, if appropriate, forward it to another application.
  */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    CLog(@"-");
+    CLog(@"- %@", navigationAction.request.URL.absoluteString);
     decisionHandler(WKNavigationActionPolicyAllow);
 }
 
@@ -174,7 +186,7 @@
  -webView:decidePolicyForNavigationAction:decisionHandler: will not be called.
  */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction preferences:(WKWebpagePreferences *)preferences decisionHandler:(void (^)(WKNavigationActionPolicy, WKWebpagePreferences *))decisionHandler API_AVAILABLE(macos(10.15), ios(13.0)){
-    CLog(@"-");
+    CLog(@"- %@", navigationAction.request.URL.absoluteString);
     decisionHandler(WKNavigationActionPolicyAllow, preferences);
 }
 

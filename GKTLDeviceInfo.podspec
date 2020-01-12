@@ -15,8 +15,8 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "GKDeviceInfo"
-  spec.version      = "0.3.0"
+  spec.name         = "GKTLDeviceInfo"
+  spec.version      = "0.3.1"
   spec.summary      = "My DeviceInfo."
 
   # This description is used to generate tags and improve search results.

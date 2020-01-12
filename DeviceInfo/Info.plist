@@ -54,7 +54,10 @@
 	<string>我们需要您的同意,才能访问相册以选择照片进行上传</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>network-authentication</string>
+		<string>processing</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
