@@ -16,6 +16,7 @@
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import <NetworkExtension/NetworkExtension.h>
 #include <sys/sysctl.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "UIDevice+Hardware.h"
 #import "HLNetWorkReachability.h"
@@ -30,8 +31,17 @@
     GKNetWorkStatus netWorkStatus;
     NSString *netWorkStatusName;
     CLLocationManager *locationManager;
+    CLGeocoder *geocoder;
     NSString *lat;
     NSString *lon;
+    CGFloat currentVolume;
+    
+    NSString *street;
+    NSString *province;
+    NSString *city;
+    NSString *county;
+    NSString *locationISOcontryCode;
+    
 }
 -(instancetype)init {
     self = [super init];
@@ -39,16 +49,37 @@
         netWorkStatusName = @"";
         lat = @"0";
         lon = @"0";
+        street = @"";
+        province = @"";
+        city = @"";
+        county = @"";
+        locationISOcontryCode = @"";
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        currentVolume = session.outputVolume;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kNetWorkReachabilityChangedNotification object:nil];
         reachability = [HLNetWorkReachability reachabilityWithHostName:@"www.baidu.com"];
         [reachability startNotifier];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVolumeChanged:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 //        [self requestLocation];
     }
     return self;
 }
 
+-(void)onVolumeChanged:(NSNotification *)notification{
+    NSLog(@"----notification---%@",notification);
+    if ([[notification.userInfo objectForKey:@"AVSystemController_AudioCategoryNotificationParameter"] isEqualToString:@"Audio/Video"]) {
+        if ([[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeChangeReasonNotificationParameter"] isEqualToString:@"ExplicitVolumeChange"]) {
+            CGFloat volume = [[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeNotificationParameter"] floatValue];
+            //根据音量处理相关的设置
+            CLog(@"%f", volume);
+        }
+    }
+}
+
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNetWorkReachabilityChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
 }
 
 +(NSString *)currentApplicationVersion {
@@ -130,6 +161,14 @@
     return str;
 }
 
++ (CGFloat)systemBrightness {
+    return [UIScreen mainScreen].brightness;
+}
+
+- (CGFloat)systemVolume {
+        return currentVolume;
+}
+
 #pragma mark - location
 -(void)requestLocation {
     if ([self locationAuthorize]) {
@@ -157,11 +196,13 @@
     [locationManager requestWhenInUseAuthorization];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    locationManager.distanceFilter = 20;
+    locationManager.distanceFilter = 10;
 }
 
 -(void)managerStartLocation {
     [locationManager requestLocation];
+//    [locationManager startUpdatingLocation];
+    
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
@@ -182,10 +223,12 @@
 //        CLog(@"lat,lon : %f,%f", location.coordinate.latitude, location.coordinate.longitude);
         lat = [NSString stringWithFormat:@"%f", location.coordinate.latitude];
         lon = [NSString stringWithFormat:@"%f", location.coordinate.longitude];
+        [self reverseGeocoder:location];
     }
-    if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
-        [_delegate deviceInfoDidChange:self];
-    }
+    
+//    if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+//        [_delegate deviceInfoDidChange:self];
+//    }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
@@ -195,6 +238,30 @@
     if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
         [_delegate deviceInfoDidChange:self];
     }
+}
+
+- (void)reverseGeocoder:(CLLocation *)currentLocation {
+    if (geocoder == nil) {
+        geocoder = [[CLGeocoder alloc] init];
+    }
+    [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        if (error || placemarks.count == 0) {
+            //
+        } else {
+            CLPlacemark *placemark = placemarks.firstObject;
+//            NSString *address = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@ %@ %@ %@", placemark.thoroughfare, placemark.subThoroughfare, placemark.locality, placemark.subLocality, placemark.administrativeArea, placemark.subAdministrativeArea, placemark.ISOcountryCode, placemark.country, placemark.inlandWater, placemark.areasOfInterest];
+//            NSLog(@"~~~~~~~address: %@", address);
+            self->street = placemark.thoroughfare==nil ? @"" : placemark.thoroughfare;
+            self->province = placemark.administrativeArea==nil ? @"" : placemark.administrativeArea;
+            self->city = placemark.locality==nil ? @"" : placemark.locality;
+            self->county = placemark.subLocality==nil ? @"" : placemark.subLocality;
+            self->locationISOcontryCode = placemark.ISOcountryCode==nil ? @"" : placemark.ISOcountryCode;
+            
+            if (self->_delegate &&[self->_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [self->_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+                [self->_delegate deviceInfoDidChange:self];
+            }
+        }
+    }];
 }
 
 #pragma mark - reachability
@@ -263,7 +330,12 @@
                           @"latitude":[NSDecimalNumber decimalNumberWithString:lat],
                           @"longitude":[NSDecimalNumber decimalNumberWithString:lon],
                           @"idfa":[GKDeviceInfo deviceIDFA],
-                          @"idfv":[GKDeviceInfo deviceIDFV]
+                          @"idfv":[GKDeviceInfo deviceIDFV],
+                          @"street":street,
+                          @"province":province,
+                          @"city":city,
+                          @"county":county,
+                          @"location_iso_contry_code":locationISOcontryCode
     };
     
     return dic;

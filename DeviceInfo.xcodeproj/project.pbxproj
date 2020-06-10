@@ -29,6 +29,7 @@
 		5F9B928F23A790CE00E8795C /* GKStringRFun.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F9B928E23A790CE00E8795C /* GKStringRFun.m */; };
 		5FA7680D2398BF8E00C9D211 /* GKStringFun.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA7680C2398BF8E00C9D211 /* GKStringFun.m */; };
 		5FA768102398CA6A00C9D211 /* NSObject+PropertyListing.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA7680F2398CA6A00C9D211 /* NSObject+PropertyListing.m */; };
+		5FCA8531240E004A006E451E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FCA8530240E004A006E451E /* AVFoundation.framework */; };
 		5FD09FBA2394D72800BA2AFE /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 		5FA7680C2398BF8E00C9D211 /* GKStringFun.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GKStringFun.m; sourceTree = "<group>"; };
 		5FA7680E2398CA6A00C9D211 /* NSObject+PropertyListing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+PropertyListing.h"; sourceTree = "<group>"; };
 		5FA7680F2398CA6A00C9D211 /* NSObject+PropertyListing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+PropertyListing.m"; sourceTree = "<group>"; };
+		5FCA8530240E004A006E451E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5FD09FB82394CF9100BA2AFE /* DeviceInfo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeviceInfo.entitlements; sourceTree = "<group>"; };
 		5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -102,6 +104,7 @@
 			files = (
 				5F089D0C238E5762005132DC /* CoreTelephony.framework in Frameworks */,
 				5FD09FBA2394D72800BA2AFE /* ExternalAccessory.framework in Frameworks */,
+				5FCA8531240E004A006E451E /* AVFoundation.framework in Frameworks */,
 				5F089D04238D13B7005132DC /* CoreLocation.framework in Frameworks */,
 				5F089CFA2387ACBE005132DC /* WebKit.framework in Frameworks */,
 				5F089D0A238E530D005132DC /* AdSupport.framework in Frameworks */,
@@ -201,6 +204,7 @@
 		5F089CF82387ACBE005132DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5FCA8530240E004A006E451E /* AVFoundation.framework */,
 				5FD09FB92394D72800BA2AFE /* ExternalAccessory.framework */,
 				5F089D0B238E5762005132DC /* CoreTelephony.framework */,
 				5F089D09238E530D005132DC /* AdSupport.framework */,

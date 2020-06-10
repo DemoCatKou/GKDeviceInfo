@@ -63,6 +63,9 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 // ....
 + (NSDictionary *)wifiInfo;
 
+#pragma mark -
+- (CGFloat)systemVolume;
++ (CGFloat)systemBrightness;
 #pragma mark - LOCATION
 // ....
 - (BOOL)locationAuthorize;

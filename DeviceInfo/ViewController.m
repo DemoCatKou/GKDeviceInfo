@@ -18,10 +18,14 @@
 #import "GKStringRFun.h"
 #import "GKStringFun.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 //#include "at.h"
 
-@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate, SFSafariViewControllerDelegate>
+@interface ViewController ()<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, GKDeviceInfoDelegate, SFSafariViewControllerDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
+@property (weak, nonatomic) IBOutlet UILabel *lblContent;
 @property (weak, nonatomic) IBOutlet WKWebView *webView;
+@property (strong, nonatomic) AVCaptureSession *session;
 
 @end
 
@@ -47,8 +51,19 @@
 //
 //    NSString *str = [deviceInfo middangeardLanguageTranslationJson];
 //    CLog(@"--> %@", str);
-    
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVolumeChanged:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+}
+
+-(void)onVolumeChanged:(NSNotification *)notification{
+    NSLog(@"----notification---%@",notification);
+    if ([[notification.userInfo objectForKey:@"AVSystemController_AudioCategoryNotificationParameter"] isEqualToString:@"Audio/Video"]) {
+        if ([[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeChangeReasonNotificationParameter"] isEqualToString:@"ExplicitVolumeChange"]) {
+            CGFloat volume = [[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeNotificationParameter"] floatValue];
+            //根据音量处理相关的设置
+            CLog(@"%f", volume);
+        }
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -80,7 +95,15 @@
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     CLog(@"js called :%@ %@", message.name, message.body);
 }
-- (IBAction)testAction:(id)sender {
+
+- (IBAction)testAction:(UIButton *)sender {
+    CLog(@"%f -----", [UIScreen mainScreen].brightness);
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    CLog(@"~~ %f", session.outputVolume);
+    NSString *str = [NSString stringWithFormat:@"%f", session.outputVolume];
+    [sender setTitle:str forState:UIControlStateNormal];
+    
+    [self lightSensitive];
 //    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"telprompt://*3001#12345#*"] options:@{} completionHandler:^(BOOL success) {
 //        if (success) {
 //            CLog(@"~~~~ success");
@@ -153,9 +176,102 @@
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"exchange"];
 }
 
+#pragma mark- 光感
+- (void)lightSensitive {
+    
+    // 1.获取硬件设备
+    AVCaptureDevice *deviceF = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevicePosition posion;
+//    posion = AVCaptureDevicePositionBack;
+    posion = AVCaptureDevicePositionFront;
+    if (@available(iOS 13.0, *)) {
+            NSArray *devices = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInDualCamera, AVCaptureDeviceTypeBuiltInTripleCamera, AVCaptureDeviceTypeBuiltInDualWideCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera, AVCaptureDeviceTypeBuiltInTrueDepthCamera, AVCaptureDeviceTypeBuiltInUltraWideCamera, AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices;//[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+            //position
+            //AVCaptureDevicePositionFront
+            //AVCaptureDevicePositionUnspecified
+            //AVCaptureDevicePositionBack
+            for (AVCaptureDevice *device in devices )
+            {
+                if ( device.position == posion )
+                {
+                    deviceF = device;
+                    break;
+                }
+            }
+        } else {
+            NSArray *devices = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInDualCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera, AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices;
+                    for (AVCaptureDevice *device in devices )
+                    {
+                        if ( device.position == posion )
+                        {
+                            deviceF = device;
+                            break;
+                        }
+                    }
+        }
+    
+    // 2.创建输入流
+    AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc]initWithDevice:deviceF error:nil];
+    
+    // 3.创建设备输出流
+    AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
+    [output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+
+    // AVCaptureSession属性
+    self.session = [[AVCaptureSession alloc]init];
+    // 设置为高质量采集率
+    [self.session setSessionPreset:AVCaptureSessionPresetHigh];
+    // 添加会话输入和输出
+    if ([self.session canAddInput:input]) {
+        [self.session addInput:input];
+    }
+    if ([self.session canAddOutput:output]) {
+        [self.session addOutput:output];
+    }
+    
+    // 9.启动会话
+    [self.session startRunning];
+    
+}
+
+#pragma mark- AVCaptureVideoDataOutputSampleBufferDelegate的方法
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    
+    CFDictionaryRef metadataDict = CMCopyDictionaryOfAttachments(NULL,sampleBuffer, kCMAttachmentMode_ShouldPropagate);
+    NSDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:(__bridge NSDictionary*)metadataDict];
+    CFRelease(metadataDict);
+    NSDictionary *exifMetadata = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    float brightnessValue = [[exifMetadata objectForKey:(NSString *)kCGImagePropertyExifBrightnessValue] floatValue];
+    
+    CLog(@"brightnessValue %f",brightnessValue);
+    
+    
+//    // 根据brightnessValue的值来打开和关闭闪光灯
+//    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+//    BOOL result = [device hasTorch];// 判断设备是否有闪光灯
+//    if ((brightnessValue < 0) && result) {// 打开闪光灯
+//
+//        [device lockForConfiguration:nil];
+//
+//        [device setTorchMode: AVCaptureTorchModeOn];//开
+//
+//        [device unlockForConfiguration];
+//
+//    }else if((brightnessValue > 0) && result) {// 关闭闪光灯
+//
+//        [device lockForConfiguration:nil];
+//        [device setTorchMode: AVCaptureTorchModeOff];//关
+//        [device unlockForConfiguration];
+//
+//    }
+    
+}
+
 #pragma mark - GKDeviceDelegate
 -(void)deviceInfoDidChange:(GKDeviceInfo *)info {
     CLog(@"%@", info.allDeviceInfoJson);
+    _lblContent.text = info.allDeviceInfoJson;
 }
 
 #pragma mark - WKNavigatiionDelegate
