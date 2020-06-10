@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "GKTLDeviceInfo"
-  spec.version      = "0.3.1"
+  spec.version      = "0.3.2"
   spec.summary      = "My DeviceInfo."
 
   # This description is used to generate tags and improve search results.
