@@ -21,10 +21,10 @@
 #import "UIDevice+Hardware.h"
 #import "HLNetWorkReachability.h"
 
-@interface GKDeviceInfo()<CLLocationManagerDelegate>
-
+@interface GKDeviceInfo()<CLLocationManagerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
+@property (strong, nonatomic) AVCaptureSession *session;
 @end
-
+typedef void(^voidBlock)(void);
 @implementation GKDeviceInfo
 {
     HLNetWorkReachability *reachability;
@@ -41,6 +41,8 @@
     NSString *city;
     NSString *county;
     NSString *locationISOcontryCode;
+    NSNumber *sensorBrightness;
+    voidBlock lightnessHandler;
     
 }
 -(instancetype)init {
@@ -67,12 +69,13 @@
 }
 
 -(void)onVolumeChanged:(NSNotification *)notification{
-    NSLog(@"----notification---%@",notification);
     if ([[notification.userInfo objectForKey:@"AVSystemController_AudioCategoryNotificationParameter"] isEqualToString:@"Audio/Video"]) {
         if ([[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeChangeReasonNotificationParameter"] isEqualToString:@"ExplicitVolumeChange"]) {
-//            CGFloat volume = [[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeNotificationParameter"] floatValue];
-            //根据音量处理相关的设置
-//            CLog(@"%f", volume);
+            currentVolume = [[notification.userInfo objectForKey:@"AVSystemController_AudioVolumeNotificationParameter"] floatValue];
+//            根据音量处理相关的设置
+            if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
+                [_delegate deviceInfoDidChange:self];
+            }
         }
     }
 }
@@ -112,22 +115,6 @@
 
 +(NSString *)language {
     NSArray *languages = [NSLocale preferredLanguages];
-//    CLog(@"preferredLanguages %@", languages.description); //首选语言顺序
-//
-//    NSArray *arrayLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
-//    CLog(@"AppleLanguages %@", arrayLanguages.description);
-//
-//    NSString *nsLang_1 = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"]  objectAtIndex:0];
-//    CLog(@"AppleLanguages %@", nsLang_1); //语言地区？zh-Hans-CN
-//
-//    NSString *nsLang  = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
-//    CLog(@"NSLocaleLanguageCode %@", nsLang); //语言？？？？？？？ //en
-//
-//    NSString *country = [[NSLocale currentLocale] localeIdentifier];
-//    CLog(@"country %@", country); //en_CN
-//
-//    NSString *nsCountry  = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-//    CLog(@"country %@", nsCountry); // CN
     if (languages.count > 0) {
         return languages.firstObject;
     } else {
@@ -207,7 +194,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     if (kCLAuthorizationStatusDenied == status || kCLAuthorizationStatusRestricted == status) {
-//        CLog(@"定位权限未开启");
         lat = @"0";
         lon = @"0";
         if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
@@ -220,19 +206,13 @@
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
     for (CLLocation *location in locations) {
-//        CLog(@"lat,lon : %f,%f", location.coordinate.latitude, location.coordinate.longitude);
         lat = [NSString stringWithFormat:@"%f", location.coordinate.latitude];
         lon = [NSString stringWithFormat:@"%f", location.coordinate.longitude];
         [self reverseGeocoder:location];
     }
-    
-//    if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
-//        [_delegate deviceInfoDidChange:self];
-//    }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-//    CLog(@"location error:%@", error.description);
     lon = @"1";
     lat = @"1";
     if (_delegate &&[_delegate conformsToProtocol:@protocol(GKDeviceInfoDelegate)] && [_delegate respondsToSelector:@selector(deviceInfoDidChange:)]) {
@@ -250,7 +230,6 @@
         } else {
             CLPlacemark *placemark = placemarks.firstObject;
 //            NSString *address = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@ %@ %@ %@", placemark.thoroughfare, placemark.subThoroughfare, placemark.locality, placemark.subLocality, placemark.administrativeArea, placemark.subAdministrativeArea, placemark.ISOcountryCode, placemark.country, placemark.inlandWater, placemark.areasOfInterest];
-//            NSLog(@"~~~~~~~address: %@", address);
             self->street = placemark.thoroughfare==nil ? @"" : placemark.thoroughfare;
             self->province = placemark.administrativeArea==nil ? @"" : placemark.administrativeArea;
             self->city = placemark.locality==nil ? @"" : placemark.locality;
@@ -273,27 +252,21 @@
     
     switch (netStatus) {
       case HLNetWorkStatusNotReachable:
-//        CLog(@"网络不可用");
             netWorkStatusName = @"NotReachable";
         break;
       case HLNetWorkStatusUnknown:
-//        CLog(@"未知网络");
             netWorkStatusName = @"Unknow";
         break;
       case HLNetWorkStatusWWAN2G:
-//        CLog(@"2G网络");
             netWorkStatusName = @"2G";
         break;
       case HLNetWorkStatusWWAN3G:
-//        CLog(@"3G网络");
             netWorkStatusName = @"3G";
         break;
       case HLNetWorkStatusWWAN4G:
-//        CLog(@"4G网络");
             netWorkStatusName = @"4G";
         break;
       case HLNetWorkStatusWiFi:
-//        CLog(@"WiFi");
             netWorkStatusName = @"WiFi";
         break;
          
@@ -308,49 +281,55 @@
     }
 }
 
--(NSString *)description {
-    NSString *str = [self allDeviceInfoJson];
-    return str;
+-(void)allDeviceInfo:(complateDictionary)complate {
+    [self lightSensitive:^{
+        CGFloat screenBrightness = [UIScreen mainScreen].brightness;
+        NSDictionary *dic = @{@"bundle_id":[GKDeviceInfo currentBundleIdentifier],
+                              @"version":[GKDeviceInfo currentApplicationVersion],
+                              @"device_name":[GKDeviceInfo deviceName],
+                              @"device_model":[GKDeviceInfo deviceModel],
+                              @"system":[GKDeviceInfo systemVersion],
+                              @"screen_width":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].width],
+                              @"screen_height":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].height],
+                              @"country":[GKDeviceInfo currentCountry],
+                              @"language":[GKDeviceInfo language],
+                              @"network":self->netWorkStatusName,
+                              @"wifi":[GKDeviceInfo wifiInfo],
+                              @"mobile_network":[GKDeviceInfo mobileNetworkInfo],
+                              @"vpn":[GKDeviceInfo getProxyStatus],
+                              @"latitude":[NSDecimalNumber decimalNumberWithString:self->lat],
+                              @"longitude":[NSDecimalNumber decimalNumberWithString:self->lon],
+                              @"idfa":[GKDeviceInfo deviceIDFA],
+                              @"idfv":[GKDeviceInfo deviceIDFV],
+                              @"media":@{
+                                      @"volume":[NSNumber numberWithFloat:self->currentVolume],
+                                      @"screen_brightness":[NSNumber numberWithFloat:screenBrightness],
+                                      @"sensor_brightness":self->sensorBrightness==nil ? [NSNull null] : self->sensorBrightness
+                              },
+                              @"location":@{@"street":self->street,
+                                            @"province":self->province,
+                                            @"city":self->city,
+                                            @"county":self->county,
+                                            @"location_iso_country_code":self->locationISOcontryCode}
+        };
+        complate(dic);
+    }];
 }
 
--(NSDictionary *)allDeviceInfo {
-    NSDictionary *dic = @{@"bundle_id":[GKDeviceInfo currentBundleIdentifier],
-                          @"version":[GKDeviceInfo currentApplicationVersion],
-                          @"device_name":[GKDeviceInfo deviceName],
-                          @"device_model":[GKDeviceInfo deviceModel],
-                          @"system":[GKDeviceInfo systemVersion],
-                          @"screen_width":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].width],
-                          @"screen_height":[NSNumber numberWithFloat:[GKDeviceInfo screenSize].height],
-                          @"country":[GKDeviceInfo currentCountry],
-                          @"language":[GKDeviceInfo language],
-                          @"network":netWorkStatusName,
-                          @"wifi":[GKDeviceInfo wifiInfo],
-                          @"mobile_network":[GKDeviceInfo mobileNetworkInfo],
-                          @"vpn":[GKDeviceInfo getProxyStatus],
-                          @"latitude":[NSDecimalNumber decimalNumberWithString:lat],
-                          @"longitude":[NSDecimalNumber decimalNumberWithString:lon],
-                          @"idfa":[GKDeviceInfo deviceIDFA],
-                          @"idfv":[GKDeviceInfo deviceIDFV],
-                          @"street":street,
-                          @"province":province,
-                          @"city":city,
-                          @"county":county,
-                          @"location_iso_contry_code":locationISOcontryCode
-    };
+-(void)allDeviceInfoJson:(complateString)complate {
+    [self allDeviceInfo:^(NSDictionary * _Nonnull dic) {
+        NSError *error;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&error];
+        if (jsonData == nil) {
+            complate(@"");
+        } else {
+            NSString *str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            str = [str stringByReplacingOccurrencesOfString:@" " withString:@""];
+            str = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+            complate(str);
+        }
+    }];
     
-    return dic;
-}
-
--(NSString *)allDeviceInfoJson {
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self allDeviceInfo] options:NSJSONWritingPrettyPrinted error:&error];
-    if (jsonData == nil) {
-        return @"";
-    }
-    NSString *str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    str = [str stringByReplacingOccurrencesOfString:@" " withString:@""];
-    str = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    return str;
 }
 
 #pragma mark - IDFV
@@ -498,29 +477,24 @@ char* printEnv(void) {
 }
 
 //+ (void)scanWifiInfos{
-//    NSLog(@"1.Start");
 //
 //    NSMutableDictionary* options = [[NSMutableDictionary alloc] init];
 //    [options setObject:@"com.kent.deviceinfo.DeviceInfo" forKey: kNEHotspotHelperOptionDisplayName];
 //    dispatch_queue_t queue = dispatch_queue_create("com.kent.deviceinfo.DeviceInfo", NULL);
 //
-//    NSLog(@"2.Try");
 //    BOOL returnType = [NEHotspotHelper registerWithOptions: options queue: queue handler: ^(NEHotspotHelperCommand * cmd) {
 //
-//        NSLog(@"4.Finish");
 //        NEHotspotNetwork* network;
 //        if (cmd.commandType == kNEHotspotHelperCommandTypeEvaluate || cmd.commandType == kNEHotspotHelperCommandTypeFilterScanList) {
 //            // 遍历 WiFi 列表，打印基本信息
 //            for (network in cmd.networkList) {
 //                NSString* wifiInfoString = [[NSString alloc] initWithFormat: @"---------------------------\nSSID: %@\nMac地址: %@\n信号强度: %f\nCommandType:%ld\n---------------------------\n\n", network.SSID, network.BSSID, network.signalStrength, (long)cmd.commandType];
-//                NSLog(@"%@", wifiInfoString);
 //
 //                // 检测到指定 WiFi 可设定密码直接连接
 //                if ([network.SSID isEqualToString: @"测试 WiFi"]) {
 //                    [network setConfidence: kNEHotspotHelperConfidenceHigh];
 //                    [network setPassword: @"123456789"];
 //                    NEHotspotHelperResponse *response = [cmd createResponse: kNEHotspotHelperResultSuccess];
-//                    NSLog(@"Response CMD: %@", response);
 //                    [response setNetworkList: @[network]];
 //                    [response setNetwork: network];
 //                    [response deliver];
@@ -530,6 +504,86 @@ char* printEnv(void) {
 //    }];
 //
 //    // 注册成功 returnType 会返回一个 Yes 值，否则 No
-//    NSLog(@"3.Result: %@", returnType == YES ? @"Yes" : @"No");
 //}
+
+#pragma mark- 光感
+- (void)lightSensitive:(void(^)(void))complate {
+    NSString *mediaType = AVMediaTypeVideo;
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if (authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted) {
+        sensorBrightness = nil;
+        complate();
+        return;
+    }
+    // 1.获取硬件设备
+    AVCaptureDevice *deviceF = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevicePosition posion;
+//    posion = AVCaptureDevicePositionBack;
+    posion = AVCaptureDevicePositionFront;
+    if (@available(iOS 13.0, *)) {
+            NSArray *devices = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInDualCamera, AVCaptureDeviceTypeBuiltInTripleCamera, AVCaptureDeviceTypeBuiltInDualWideCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera, AVCaptureDeviceTypeBuiltInTrueDepthCamera, AVCaptureDeviceTypeBuiltInUltraWideCamera, AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices;//[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+            //position
+            //AVCaptureDevicePositionFront
+            //AVCaptureDevicePositionUnspecified
+            //AVCaptureDevicePositionBack
+            for (AVCaptureDevice *device in devices )
+            {
+                if ( device.position == posion )
+                {
+                    deviceF = device;
+                    break;
+                }
+            }
+        } else {
+            NSArray *devices = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInDualCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera, AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices;
+                    for (AVCaptureDevice *device in devices )
+                    {
+                        if ( device.position == posion )
+                        {
+                            deviceF = device;
+                            break;
+                        }
+                    }
+        }
+    
+    // 2.创建输入流
+    AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc]initWithDevice:deviceF error:nil];
+    
+    // 3.创建设备输出流
+    AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
+    [output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+
+    // AVCaptureSession属性
+    self.session = [[AVCaptureSession alloc]init];
+    // 设置为高质量采集率
+    [self.session setSessionPreset:AVCaptureSessionPresetHigh];
+    // 添加会话输入和输出
+    if ([self.session canAddInput:input]) {
+        [self.session addInput:input];
+    }
+    if ([self.session canAddOutput:output]) {
+        [self.session addOutput:output];
+    }
+    
+    lightnessHandler = complate;
+    // 9.启动会话
+    [self.session startRunning];
+    
+}
+
+#pragma mark- AVCaptureVideoDataOutputSampleBufferDelegate的方法
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    
+    CFDictionaryRef metadataDict = CMCopyDictionaryOfAttachments(NULL,sampleBuffer, kCMAttachmentMode_ShouldPropagate);
+    NSDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:(__bridge NSDictionary*)metadataDict];
+    CFRelease(metadataDict);
+    NSDictionary *exifMetadata = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    float brightnessValue = [[exifMetadata objectForKey:(NSString *)kCGImagePropertyExifBrightnessValue] floatValue];
+    
+    sensorBrightness = [NSNumber numberWithFloat:brightnessValue];
+    lightnessHandler();
+    [self.session stopRunning];
+}
+
 @end

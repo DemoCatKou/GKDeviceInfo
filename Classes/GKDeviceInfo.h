@@ -20,7 +20,8 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
     
     GKNetWorkStatusWiFi = 9,
 };
-
+typedef void(^complateDictionary)(NSDictionary *dic);
+typedef void(^complateString)(NSString *str);
 @class GKDeviceInfo;
 @protocol GKDeviceInfoDelegate <NSObject>
 
@@ -71,8 +72,8 @@ typedef NS_ENUM(NSUInteger, GKNetWorkStatus) {
 - (BOOL)locationAuthorize;
 - (void)requestLocation;
 
-- (NSDictionary *)allDeviceInfo;
-- (NSString *)allDeviceInfoJson;
+- (void)allDeviceInfo:(complateDictionary)complate;
+- (void)allDeviceInfoJson:(complateString)complate;
 
 #pragma mark - DEVICE STATUS
 + (BOOL)isJailBroken;
